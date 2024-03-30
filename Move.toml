@@ -1,0 +1,16 @@
+[package]
+name = "ENSResolver"
+version = "1.0.0"
+authors = []
+
+[addresses]
+sender = "0x6f7ad109a6008ad1ac4345f97707191354c71eae72cdbb05b5170a92dccd67f1"
+
+[dev-addresses]
+
+[dependencies.AptosFramework]
+git = "https://github.com/aptos-labs/aptos-core.git"
+rev = "mainnet"
+subdir = "aptos-move/framework/aptos-framework"
+
+[dev-dependencies]
