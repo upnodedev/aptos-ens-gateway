@@ -22,6 +22,21 @@ module sender::resolver {
         text: Table<String, String>,
     }
 
+    #[event]
+    struct AddrChanged has drop, store {
+        account: address,
+        node: vector<u8>,
+        addr: address,
+    }
+
+    #[event]
+    struct TextChanged has drop, store {
+        account: address,
+        node: vector<u8>,
+        key: String,
+        value: String,
+    }
+
     fun get_seed(node: vector<u8>): vector<u8> {
         vector::append(&mut node, SCHEMA);
         node
@@ -69,6 +84,12 @@ module sender::resolver {
 
         // put address to the resolver
         resolver.addr = addr;
+
+        event::emit(AddrChanged {
+            account: signer_address,
+            node,
+            addr,
+        });
     }
 
     #[view]
@@ -100,6 +121,13 @@ module sender::resolver {
 
         // add value to the table
         table::add(&mut resolver.text, key, value);
+
+        event::emit(TextChanged {
+            account: signer_address,
+            node,
+            key,
+            value,
+        });
     }
 
     #[view]
