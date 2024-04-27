@@ -22,7 +22,7 @@ I have a track record of contributing to the official ENS EVM Gateway developed.
 
 In the classical ENS smart contract system, which limits resolution to Layer 1 only, we have the ENSRegistry. This registry manages domain metadata such as ownership and the resolver address, which is registered from the Registrar contract. Clients look up specific records set in the resolver, which acts as its own storage system.
 
-## ENS Scaling Solutions
+## ENS Scaling Solutions for Aptos
 
 ![image](https://github.com/Chomtana/aptos-ens-gateway/assets/4103490/41b37e13-685b-43f4-b4ef-dc64d302a178)
 
