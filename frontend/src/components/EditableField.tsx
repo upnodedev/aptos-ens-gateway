@@ -1,12 +1,10 @@
 import { CheckOutlined, CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 import { Button, Input, Select } from "antd";
 import { ReactNode, useEffect, useState } from "react";
+import { ValueLabel } from "../types/option";
 
 export interface EditingFieldProps {
-  options: {
-    value: string;
-    label: ReactNode;
-  }[];
+  options: ValueLabel[];
 
   field?: string;
   value: string;

@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { WalletSelector } from '@aptos-labs/wallet-adapter-ant-design'
 import EditableField from './components/EditableField'
+import { WALLET_OPTIONS } from './constants/resolver-fields'
+import AddField from './components/AddField'
 
 function App() {
   const [count, setCount] = useState(0)
+  const domainName = "chomtana.eth"
 
   return (
     <>
@@ -14,22 +17,20 @@ function App() {
         </div>
 
         <div className='my-5'>
-          <div className='text-2xl'>Wallet Addresses</div>
+          <div className='text-2xl mb-2'>Wallet Addresses</div>
 
           <div>
             <EditableField
-              options={[
-                {
-                  value: 'Ethereum',
-                  label: 'Ethereum',
-                },
-                {
-                  value: 'Github',
-                  label: 'Github',
-                }
-              ]}
+              options={WALLET_OPTIONS}
               value=''
             ></EditableField>
+          </div>
+
+          <div>
+            <AddField
+              options={WALLET_OPTIONS}
+              onCancel={async () => true}
+            ></AddField>
           </div>
         </div>
       </div>

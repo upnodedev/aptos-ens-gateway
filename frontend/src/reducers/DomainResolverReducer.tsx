@@ -1,14 +1,10 @@
 import React, { ReactNode, useContext, useReducer } from "react";
-
-export interface ResolverFieldValue {
-  field: string;
-  value: string;
-}
+import { FieldValue } from "../types/option";
 
 export interface DomainResolverState {
   address: string;
-  addressExt: ResolverFieldValue[];
-  text: ResolverFieldValue[];
+  addressExt: FieldValue[];
+  text: FieldValue[];
   contentHash: string;
   loading: boolean;
 }
@@ -62,7 +58,7 @@ export function useDomainResolverReducer(): [
 export function DomainResolverProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(
     domainResolverReducer,
-    DEFAULT_RESOLVER_STATE
+    DEFAULT_RESOLVER_STATE,
   );
 
   return (
