@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { WalletSelector } from "@aptos-labs/wallet-adapter-ant-design";
 import EditableField from "./components/EditableField";
 import { TEXT_OPTIONS, WALLET_OPTIONS } from "./constants/resolver-fields";
@@ -13,11 +12,10 @@ import Logo from "../public/logo.png";
 import { Skeleton } from "antd";
 
 function App() {
-  const [count, setCount] = useState(0);
   const domainName = "chomtana.eth";
 
   const { account } = useWallet();
-  const [state, dispatch, fetchData] = useAptosResolverData(domainName);
+  const [state, _, fetchData] = useAptosResolverData(domainName);
   const { setAddr, setAddrExt, setText } = useAptosResolverActions(domainName);
 
   return (

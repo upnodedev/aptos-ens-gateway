@@ -1,5 +1,7 @@
 # Aptos ENS Gateway
 
+Testnet: [Live Website](https://aptos-ens.chom.dev) | [Contract Module](https://explorer.aptoslabs.com/account/0x4aac1f0a41d1251b67e7623b3bdf3034cbd4bb05938a1129ddd9dec3ba8ed200/modules/code/resolver?network=testnet)
+
 Aptos ENS Gateway is a gateway for connecting ENS domains to Aptos.
 
 We reference implementation from ENS's official EVM Gateway: https://github.com/ensdomains/evmgateway and migrate them to the Move smart contract module deployed on the Aptos chain.
