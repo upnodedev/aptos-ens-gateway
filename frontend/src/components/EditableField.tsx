@@ -12,6 +12,7 @@ export interface EditingFieldProps {
   onSave?: (field: string, value: string) => Promise<boolean>;
   onCancel?: (field?: string) => any;
   onDelete?: (field: string) => Promise<boolean>;
+  refreshData?: () => any;
 }
 
 export default function EditingField({
@@ -21,6 +22,7 @@ export default function EditingField({
   onSave,
   onCancel,
   onDelete,
+  refreshData,
 }: EditingFieldProps) {
   const [editing, setEditing] = useState(!Boolean(value));
   const [tempField, setTempField] = useState(field ? field : options.length == 1 ? options[0].value : field);
@@ -62,6 +64,7 @@ export default function EditingField({
               onClick={async () => {
                 if (tempField && tempValue) {
                   if (onSave && await onSave(tempField, tempValue)) {
+                    if (refreshData) refreshData();
                     setEditing(false)
                   }
                 }
@@ -96,6 +99,7 @@ export default function EditingField({
                 if (field) {
                   if (!onDelete || (await onDelete(field))) {
                     if (onCancel) onCancel(field);
+                    if (refreshData) refreshData();
                   }
                 }
               }}
