@@ -1,6 +1,6 @@
 # Aptos ENS Gateway
 
-Testnet: [Live Website](https://aptos-ens.chom.dev) | [Contract Module](https://explorer.aptoslabs.com/account/0x4aac1f0a41d1251b67e7623b3bdf3034cbd4bb05938a1129ddd9dec3ba8ed200/modules/code/resolver?network=testnet)
+**Testnet: [Live Website](https://aptos-ens.chom.dev) | [Contract Module](https://explorer.aptoslabs.com/account/0x4aac1f0a41d1251b67e7623b3bdf3034cbd4bb05938a1129ddd9dec3ba8ed200/modules/code/resolver?network=testnet)**
 
 Aptos ENS Gateway is a gateway for connecting ENS domains to Aptos.
 
@@ -43,3 +43,17 @@ When a user sets the domain record on Aptos through the Resolver module, the cor
 We could always rely on LayerZero, but this would unnecessarily increase the cost. Once the state root is submitted to Optimism, it is rolled up to the Ethereum mainnet. The CCIP gateway then fetches data from Aptos RPC as usual, with additional proof sent to the Verifier. This proof ensures that the state root is successfully submitted to Optimism and that the data is included in the state Merkle tree.
 
 If the Verifier successfully verifies the proof, the data is returned to the client. This approach aligns with the ENS vision, as ENS accepts verifying data from Optimism and Arbitrum. We relay data securely and optimistically from the Aptos chain.
+
+## Roadmap
+
+This project has been submitted to the [Akindo Aptos WaveHack](https://app.akindo.io/wave-hacks/Z47L4rwQmI774vRpr) with the following roadmap:
+* Wave 1: Ideation
+* Wave 2: Development of a basic resolver move contract
+* Wave 3: Unit testing the resolver contract
+* Wave 4: Publishing the technical specification
+* Wave 5: Development of a basic UI for interacting with the Aptos resolver module
+* Wave 6: Development of a centralized gateway and completion of the UI development
+* Wave 7: Development of an Aptos resolver indexer for publishing root to Optimism L2, which ENS supports
+* Wave 8: Development of a gateway that works similarly to the proposed solution
+* Wave 9: Mainnet deployment and testing
+* Wave 10: Expansion to Aptos Names (.apt)
