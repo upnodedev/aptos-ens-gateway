@@ -138,6 +138,11 @@ export function useAptosResolverData(
             loading: false,
           },
         });
+      } else {
+        dispatch({
+          type: "LOADING",
+          loading: false,
+        })
       }
     }
   }, [domainName, account, dispatch]);

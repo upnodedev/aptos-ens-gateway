@@ -12,7 +12,7 @@ import Logo from "../public/logo.png";
 import { Skeleton } from "antd";
 
 function App() {
-  const domainName = "chomtana.eth";
+  const domainName = "aptosensgateway.eth";
 
   const { account } = useWallet();
   const [state, _, fetchData] = useAptosResolverData(domainName);
