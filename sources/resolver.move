@@ -70,7 +70,7 @@ module sender::resolver {
         let signer_address = signer::address_of(account);
 
         // Calculate object address to check for existence
-        let object_address = object::create_object_address(&signer_address, node);
+        let object_address = object::create_object_address(&signer_address, get_seed(node));
 
         // check if signer hasn't initialized resolver
         assert!(!object::object_exists<0x1::object::ObjectCore>(object_address), E_ALREADY_INITIALIZED);
@@ -96,6 +96,13 @@ module sender::resolver {
             account: signer_address,
             node,
         });
+    }
+
+    #[view]
+    public fun has_resolver(addr: address, node: vector<u8>): bool {
+        // Calculate object address to check for existence
+        let object_address = object::create_object_address(&addr, get_seed(node));
+        return object::object_exists<0x1::object::ObjectCore>(object_address)
     }
 
     public entry fun set_addr(account: &signer, node: vector<u8>, addr: address) acquires Resolver {
@@ -245,6 +252,16 @@ module sender::resolver {
     }
 
     #[test(account = @0x1)]
+    public entry fun sender_create_resolver(account: signer) acquires Resolver {
+        let addr = signer::address_of(&account);
+        aptos_framework::account::create_account_for_test(addr);
+
+        assert!(!has_resolver(addr, b"node"), 0);
+        set_addr(&account, b"node", addr);
+        assert!(has_resolver(addr, b"node"), 0);
+    }
+
+    #[test(account = @0x1)]
     public entry fun sender_can_set_addr(account: signer) acquires Resolver {
         let addr = signer::address_of(&account);
         aptos_framework::account::create_account_for_test(addr);
@@ -272,9 +289,12 @@ module sender::resolver {
 
         let key = string::utf8(b"com.twitter");
         let value = string::utf8(b"chomtana");
+        let value2 = string::utf8(b"chomtana2");
 
         set_text(&account, b"node", key, value);
         assert!(get_text(addr, b"node", key) == value, 0);
+        set_text(&account, b"node", key, value2);
+        assert!(get_text(addr, b"node", key) == value2, 0);
     }
 
     #[test(account = @0x1)]
