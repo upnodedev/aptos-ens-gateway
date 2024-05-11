@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = []
 
 [addresses]
-sender = "0xff764de1cddd35601ba7bf58c82efb89b98485939d3a470477c97993da918a26"
+sender = "0x4aac1f0a41d1251b67e7623b3bdf3034cbd4bb05938a1129ddd9dec3ba8ed200"
 
 [dev-addresses]
 
