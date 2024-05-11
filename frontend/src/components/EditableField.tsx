@@ -23,7 +23,7 @@ export default function EditingField({
   onDelete,
 }: EditingFieldProps) {
   const [editing, setEditing] = useState(!Boolean(value));
-  const [tempField, setTempField] = useState(field);
+  const [tempField, setTempField] = useState(field ? field : options.length == 1 ? options[0].value : field);
   const [tempValue, setTempValue] = useState(value);
 
   useEffect(() => {
