@@ -65,7 +65,8 @@ ezccip.enableENSIP10(async (name, context) => {
 						typeArguments: [],
 					}))[0]
 	
-					return '0x' + Buffer.from(raw).toString("hex")
+					// Type bug (actual: string, definition: number[])
+					return `${raw}`
 				}
 			} catch (err) {
 				return '0x'
@@ -81,7 +82,8 @@ ezccip.enableENSIP10(async (name, context) => {
 					typeArguments: [],
 				}))[0]
 				
-				return '0x' + Buffer.from(raw).toString("hex")
+				// Type bug (actual: string, definition: number[])
+				return `${raw}`
 			} catch (err) {
 				return '0x'
 			}
