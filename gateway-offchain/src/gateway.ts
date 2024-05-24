@@ -32,47 +32,59 @@ ezccip.enableENSIP10(async (name, context) => {
 
   return {
     async text(key) {
-			return (await SURF[chain].view.get_text({
-				functionArguments: [
-					context.aptos as `0x${string}`,
-					[...dnsNode],
-					key,
-				],
-				typeArguments: [],
-			}))[0]
+			try {
+				return (await SURF[chain].view.get_text({
+					functionArguments: [
+						context.aptos as `0x${string}`,
+						[...dnsNode],
+						key,
+					],
+					typeArguments: [],
+				}))[0]
+			} catch (err) {
+				return ''
+			}
     },
     async addr(type) {
-			if (Number(type) == 637) {
-				return (await SURF[chain].view.get_addr({
-					functionArguments: [
-						context.aptos as `0x${string}`,
-						[...dnsNode],
-					],
-					typeArguments: [],
-				}))[0]
-			} else {
-				const raw = (await SURF[chain].view.get_addr_ext({
-					functionArguments: [
-						context.aptos as `0x${string}`,
-						[...dnsNode],
-						Number(type),
-					],
-					typeArguments: [],
-				}))[0]
-
-				return '0x' + Buffer.from(raw).toString("hex")
+			try {
+				if (Number(type) == 637) {
+					return (await SURF[chain].view.get_addr({
+						functionArguments: [
+							context.aptos as `0x${string}`,
+							[...dnsNode],
+						],
+						typeArguments: [],
+					}))[0]
+				} else {
+					const raw = (await SURF[chain].view.get_addr_ext({
+						functionArguments: [
+							context.aptos as `0x${string}`,
+							[...dnsNode],
+							Number(type),
+						],
+						typeArguments: [],
+					}))[0]
+	
+					return '0x' + Buffer.from(raw).toString("hex")
+				}
+			} catch (err) {
+				return '0x'
 			}
     },
     async contenthash() {
-			const raw = (await SURF[chain].view.get_contenthash({
-				functionArguments: [
-					context.aptos as `0x${string}`,
-					[...dnsNode],
-				],
-				typeArguments: [],
-			}))[0]
-      
-			return '0x' + Buffer.from(raw).toString("hex")
+			try {
+				const raw = (await SURF[chain].view.get_contenthash({
+					functionArguments: [
+						context.aptos as `0x${string}`,
+						[...dnsNode],
+					],
+					typeArguments: [],
+				}))[0]
+				
+				return '0x' + Buffer.from(raw).toString("hex")
+			} catch (err) {
+				return '0x'
+			}
     },
   };
 });
