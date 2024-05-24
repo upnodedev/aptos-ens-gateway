@@ -20,8 +20,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.text({ type: "text/plain" }));
 
 const RESOLVERS: { [chain: string]: `0x${string}` } = {
-  m: "0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f", // Mainnet
-  s: "0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39", // Sepolia
+  m: "0x7CE6Cf740075B5AF6b1681d67136B84431B43AbD", // Mainnet
+  s: "0x3c187BAb6dC2C94790d4dA5308672e6F799DcEC3", // Sepolia
 };
 
 // Middleware to handle text/plain content type and parse JSON string
