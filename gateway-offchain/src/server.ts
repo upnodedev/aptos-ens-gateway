@@ -1,4 +1,4 @@
-import express from "express";
+import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { ezccip } from "./gateway.js";
@@ -17,16 +17,29 @@ app.use(cors());
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+app.use(bodyParser.text({ type: "text/plain" }));
 
-const RESOLVERS: {[chain: string]: `0x${string}`} = {
-  'm': '0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f', // Mainnet
-  's': '0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39', // Sepolia
-}
+const RESOLVERS: { [chain: string]: `0x${string}` } = {
+  m: "0x828ec5bDe537B8673AF98D77bCB275ae1CA26D1f", // Mainnet
+  s: "0x9Ec7f2ce83fcDF589487303fA9984942EF80Cb39", // Sepolia
+};
+
+// Middleware to handle text/plain content type and parse JSON string
+app.use((req: Request, res: Response, next: NextFunction) => {
+  if (req.is("text/plain") && typeof req.body === "string") {
+    try {
+      req.body = JSON.parse(req.body);
+    } catch (error) {
+      return res.status(400).send("Invalid JSON string");
+    }
+  }
+  next();
+});
 
 // Endpoint to handle CCIP-Read requests
 app.post("/:chain/:aptos", async (req, res) => {
   try {
-    const { chain, aptos } = req.params
+    const { chain, aptos } = req.params;
     const { sender, data: calldata } = req.body;
 
     // Handle the CCIP-Read request
