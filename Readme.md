@@ -52,8 +52,8 @@ This project has been submitted to the [Akindo Aptos WaveHack](https://app.akind
 * Wave 3: Unit testing the resolver contract
 * Wave 4: Publishing the technical specification
 * Wave 5: Development of a basic UI for interacting with the Aptos resolver module
-* Wave 6: Development of a centralized gateway and completion of the UI development
-* Wave 7: Development of an Aptos resolver indexer for publishing root to Optimism L2, which ENS supports
-* Wave 8: Development of a gateway that works similarly to the proposed solution
-* Wave 9: Mainnet deployment and testing
-* Wave 10: Expansion to Aptos Names (.apt)
+* Wave 6: Development of a centralized gateway and ENS linking UI development
+* Wave 7: Expansion to support setting additional records for Aptos name
+* Wave 8: Mainnet deployment and testing
+* Wave 9: Gateway for resolving Aptos .apt name on ENS as an ENS subdomain
+* Wave 10: UX/UI Improvement
