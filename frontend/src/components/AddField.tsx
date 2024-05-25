@@ -48,7 +48,6 @@ export default function AddField({
   } else {
     return (
       <Button
-        type="primary"
         icon={<PlusOutlined />}
         onClick={() => setAdding(true)}
       >
