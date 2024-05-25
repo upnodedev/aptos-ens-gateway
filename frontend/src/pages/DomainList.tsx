@@ -119,7 +119,7 @@ export default function DomainList() {
     }
   }
 
-  const loading = domainsLoading || isPending;
+  const loading = domainsLoading || (isPending && domains.length > 0);
 
   console.log(domains);
 
@@ -134,7 +134,7 @@ export default function DomainList() {
         <Skeleton active className="mt-8"></Skeleton>
       ) : domains.length == 0 ? (
         <div className="flex flex-col items-center mt-8">
-          <div className="mb-2">You don't have any domains!</div>
+          <div className="mb-3">You don't have any domains!</div>
           <a href="https://ens.domains">
             <Button>Register ENS Domains</Button>
           </a>
