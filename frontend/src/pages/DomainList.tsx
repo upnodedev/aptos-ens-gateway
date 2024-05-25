@@ -119,7 +119,7 @@ export default function DomainList() {
     }
   }
 
-  const loading = domainsLoading || (isPending && domains.length > 0);
+  const loading = domainsLoading || (isPending && domains_.length > 0);
 
   console.log(domains);
 

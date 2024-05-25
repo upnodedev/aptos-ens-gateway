@@ -114,7 +114,7 @@ export default function useEnsDomain(domainName: string): [DomainEns | null, boo
     }
   }
 
-  const loading = domainsLoading || (isPending && domains.length > 0);
+  const loading = domainsLoading || (isPending && domains_.length > 0);
 
   if (domains.length == 0) {
     return [null, loading, refreshDomains]
