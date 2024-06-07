@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import { DomainEns } from "../types/domain";
 import { namehash, normalize } from 'viem/ens'
 import TOR from "../abi/TOR.json";
-import { useReadContracts } from "wagmi";
+import { useChainId, useReadContracts } from "wagmi";
 
 // Set up the Apollo Client
 const client = new ApolloClient({
@@ -35,9 +35,15 @@ const GET_DOMAIN = gql`
   }
 `;
 
+const RESOLVER_CONTRACT: {[chainId: number]: `0x${string}`} = {
+  1: '0x7CE6Cf740075B5AF6b1681d67136B84431B43AbD',
+  11155111: '0x3c187bab6dc2c94790d4da5308672e6f799dcec3',
+}
+
 export default function useEnsDomain(domainName: string): [DomainEns | null, boolean, () => Promise<void>] {
   const [domainsLoading, setDomainsLoading] = useState(true);
   const [domains_, setDomains] = useState<DomainEns[]>([]);
+  const chainId = useChainId()
 
   const refreshDomains = useCallback(async () => {
     try {
@@ -80,7 +86,7 @@ export default function useEnsDomain(domainName: string): [DomainEns | null, boo
   }, [domainName]);
 
   const CCIP_CONTEXT_CONTRACT = {
-    address: "0x3c187bab6dc2c94790d4da5308672e6f799dcec3",
+    address: RESOLVER_CONTRACT[chainId],
     abi: TOR,
     functionName: "text",
   } as const;
@@ -102,7 +108,7 @@ export default function useEnsDomain(domainName: string): [DomainEns | null, boo
       if (ccipContexts[i].status == "success") {
         if (
           (ccipContexts[i].result as string).startsWith(ccipContextTemplate) &&
-          domains_[i].resolver == "0x3c187bab6dc2c94790d4da5308672e6f799dcec3"
+          domains_[i].resolver == RESOLVER_CONTRACT[chainId]
         ) {
           domain.aptosNamespace = (ccipContexts[i].result as string).substring(
             ccipContextTemplate.length

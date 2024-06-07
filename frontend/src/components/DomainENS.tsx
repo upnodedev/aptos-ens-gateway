@@ -1,4 +1,8 @@
-import { CheckCircleFilled, CloseCircleFilled } from "@ant-design/icons";
+import {
+  CheckCircleFilled,
+  CloseCircleFilled,
+  InfoCircleFilled,
+} from "@ant-design/icons";
 import { DomainEns } from "../types/domain";
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 
@@ -14,18 +18,25 @@ export default function DomainENS({ domain }: { domain: DomainEns }) {
 
       <div
         className={`mt-1 flex text-sm ${
-          domain.aptosNamespace && domain.aptosNamespace == account?.address
+          domain.isApt
+            ? "text-blue-600"
+            : domain.aptosNamespace && domain.aptosNamespace == account?.address
             ? "text-green-600"
             : "text-red-600"
         }`}
       >
-        {domain.aptosNamespace && domain.aptosNamespace == account?.address ? (
+        {domain.isApt ? (
+          <InfoCircleFilled></InfoCircleFilled>
+        ) : domain.aptosNamespace &&
+          domain.aptosNamespace == account?.address ? (
           <CheckCircleFilled></CheckCircleFilled>
         ) : (
           <CloseCircleFilled></CloseCircleFilled>
         )}
         &nbsp;
-        {domain.aptosNamespace
+        {domain.isApt
+          ? "Aptos Native Domain"
+          : domain.aptosNamespace
           ? domain.aptosNamespace == account?.address
             ? `Linked to Aptos Wallet`
             : `Linked to another Aptos Wallet`

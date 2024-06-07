@@ -16,6 +16,7 @@ import { namehash } from "viem";
 import { normalize } from "viem/ens";
 import NameWrapper from '../abi/NameWrapper.json'
 import TOR from '../abi/TOR.json'
+import { useAptosDomain } from "../hooks/useAptosDomains";
 
 function DomainManage() {
   const { domainName: domainName_ } = useParams() as { domainName: string };
@@ -27,7 +28,9 @@ function DomainManage() {
   const { writeContractAsync } = useWriteContract()
   const publicClient = usePublicClient()
 
-  const [ domain, domainLoading, refreshDomain ] = useEnsDomain(domainName)
+  const [ ensDomain, domainLoading, refreshDomain ] = useEnsDomain(domainName)
+  const [ aptosDomain, aptosDomainLoading, __ ] = useAptosDomain(domainName)
+  const domain = ensDomain || aptosDomain
 
   const linkToAptos = useCallback(async () => {
     if (domainName && account?.address) {
@@ -52,7 +55,7 @@ function DomainManage() {
     }
   }, [ domainName, account?.address ])
 
-  if (!domainLoading && !domain) {
+  if (!domainLoading && !aptosDomainLoading && !domain) {
     window.alert(`Domain ${domainName} is not found!`)
     window.location.href = '/'
 
@@ -75,11 +78,13 @@ function DomainManage() {
             <div className="my-5 flex justify-between items-center">
               <DomainENS domain={domain}></DomainENS>
 
-              <div>
-                <Button type="primary" size="large" onClick={() => linkToAptos()}>
-                  Link to Aptos
-                </Button>
-              </div>
+              {!domain.isApt &&
+                <div>
+                  <Button type="primary" size="large" onClick={() => linkToAptos()}>
+                    Link to Aptos
+                  </Button>
+                </div>
+              }
             </div>
 
             <div className="my-5">
@@ -94,7 +99,7 @@ function DomainManage() {
                     },
                   ]}
                   field="637"
-                  value={state.address}
+                  value={domain.isApt ? domain.owner : state.address}
                   onSave={async (_, value) => {
                     try {
                       if (value.startsWith("0x")) {

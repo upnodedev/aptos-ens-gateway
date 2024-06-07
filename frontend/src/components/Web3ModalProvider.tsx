@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react'
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config'
 
 import { WagmiProvider } from 'wagmi'
-import { sepolia } from 'wagmi/chains'
+import { mainnet, sepolia } from 'wagmi/chains'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 
@@ -20,7 +20,7 @@ const metadata = {
   icons: ['https://raw.githubusercontent.com/Chomtana/aptos-ens-gateway/master/frontend/public/logo.png']
 }
 
-const chains = [sepolia] as const
+const chains = [mainnet, sepolia] as const
 const config = defaultWagmiConfig({
   chains,
   projectId,
