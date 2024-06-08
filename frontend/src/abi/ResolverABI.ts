@@ -1,5 +1,5 @@
 export default {
-  "address": "0x4aac1f0a41d1251b67e7623b3bdf3034cbd4bb05938a1129ddd9dec3ba8ed200",
+  "address": "0xe5bf58bbf89ee015ab9941b8b376d0ce6bcf8824423febfbbbb4693cdf8f975a",
   "name": "resolver",
   "friends": [],
   "exposed_functions": [
