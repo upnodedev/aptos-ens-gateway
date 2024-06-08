@@ -11,6 +11,7 @@ import packet from "dns-packet";
 import { useWalletClient } from "@thalalabs/surf/hooks";
 import { TEXT_OPTIONS, WALLET_OPTIONS } from "../constants/resolver-fields.ts";
 import { Buffer } from 'buffer'
+import { useChainId } from "wagmi";
 
 function hexEncodeName(name: string) {
   return (packet as any).name.encode(name) as Buffer;
@@ -36,15 +37,21 @@ function convertToNumberArray(input: string | number[]) {
   throw new Error("Input must be a hex string starting with '0x' or an array of numbers.");
 }
 
-const aptos = new Aptos(new AptosConfig({ network: Network.TESTNET }));
-const client = createSurfClient(aptos);
+const aptosTestnet = new Aptos(new AptosConfig({ network: Network.TESTNET }));
+const clientTestnet = createSurfClient(aptosTestnet);
+
+const aptosMainnet = new Aptos(new AptosConfig({ network: Network.MAINNET }));
+const clientMainnet = createSurfClient(aptosMainnet);
 
 export function useAptosResolverData(
   domainName: string
 ): [DomainResolverState, React.Dispatch<any>, () => Promise<void>] {
   const { account } = useWallet();
   const [state, dispatch] = useDomainResolverReducer();
+  const chainId = useChainId()
   const dnsNode = hexEncodeName(domainName);
+
+  const client = chainId == 1 ? clientMainnet : clientTestnet
 
   const fetchData = useCallback(async () => {
     dispatch({
@@ -157,6 +164,9 @@ export function useAptosResolverData(
 export function useAptosResolverActions(domainName: string) {
   const { client } = useWalletClient();
   const dnsNode = hexEncodeName(domainName);
+  const chainId = useChainId()
+
+  const aptos = chainId == 1 ? aptosMainnet : aptosTestnet
 
   const setAddr = useCallback(
     async (address: `0x${string}`) => {
