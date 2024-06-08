@@ -1,6 +1,4 @@
-import { ApolloClient, InMemoryCache, gql } from "@apollo/client";
-import { useCallback, useEffect, useState } from "react";
-import { useAccount, useChainId, useReadContracts } from "wagmi";
+import { useChainId, useReadContracts } from "wagmi";
 import { DomainEns } from "../types/domain";
 import TOR from "../abi/TOR.json";
 import { namehash } from "viem";
@@ -11,41 +9,10 @@ import { useAptosDomains } from "../hooks/useAptosDomains";
 import { RESOLVER_CONTRACT } from "../constants/ens-address";
 import { useEnsDomains } from "../hooks/useEnsDomains";
 
-// Set up the Apollo Client
-const client = new ApolloClient({
-  uri: "https://api.studio.thegraph.com/proxy/49574/enssepolia/version/latest",
-  cache: new InMemoryCache(),
-});
-
-// Define the query
-const GET_DOMAINS = gql`
-  query GetDomains($owner: String!) {
-    nameWrappeds(
-      where: { owner: $owner }
-      orderBy: blockNumber
-      orderDirection: desc
-    ) {
-      id
-      name
-      owner {
-        id
-      }
-      expiryDate
-      domain {
-        resolver {
-          address
-          texts
-        }
-      }
-    }
-  }
-`;
-
 export default function DomainList() {
-  const { address } = useAccount();
   const chainId = useChainId()
 
-  const [domains_, domainsLoading, refreshDomains] = useEnsDomains();
+  const [domains_, domainsLoading, _refreshDomains] = useEnsDomains();
   const [aptosDomains, aptosDomainsLoading, _] = useAptosDomains();
 
   const CCIP_CONTEXT_CONTRACT = {
