@@ -12,7 +12,7 @@ export default function DomainENS({ domain }: { domain: DomainEns }) {
   return (
     <div>
       <div className="font-bold text-gray-800">{domain.name}</div>
-      {Boolean(domain.expiryDate.getTime) &&
+      {Boolean(domain.expiryDate.getTime()) &&
         <div className="text-gray-500 text-xs">
           Expire: {domain.expiryDate.toLocaleDateString()}
         </div>
