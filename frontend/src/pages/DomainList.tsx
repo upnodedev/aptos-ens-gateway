@@ -59,6 +59,7 @@ export default function DomainList() {
       <div className="flex flex-col items-center mt-8">
         <div className="text-4xl mb-1">Your Domains</div>
         <div>Manage ENS domains on Aptos!</div>
+        <div className="text-2xl mt-1">{chainId == 1 ? 'MAINNET' : 'TESTNET'}</div>
       </div>
 
       {loading ? (
