@@ -64,7 +64,7 @@ function DomainManage() {
 
       refreshDomain()
     }
-  }, [ domainName, account?.address, publicClient ])
+  }, [ domain, domainName, account?.address, publicClient ])
 
   if (!domainLoading && !aptosDomainLoading && !domain) {
     window.alert(`Domain ${domainName} is not found!`)
