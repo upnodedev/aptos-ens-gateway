@@ -14,7 +14,7 @@ module sender::resolver {
     const E_NOT_INITIALIZED: u64 = 1;
     const E_ALREADY_INITIALIZED: u64 = 2;
 
-    const SCHEMA: vector<u8> = b"ChomENSResolver";
+    const SCHEMA: vector<u8> = b"AptosNameResolver";
 
     #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
     struct Resolver has key {

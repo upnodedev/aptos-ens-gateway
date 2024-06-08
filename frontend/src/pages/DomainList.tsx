@@ -8,6 +8,8 @@ import { Button, Skeleton } from "antd";
 import { Link } from "react-router-dom";
 import DomainENS from "../components/DomainENS";
 import { useAptosDomains } from "../hooks/useAptosDomains";
+import { RESOLVER_CONTRACT } from "../constants/ens-address";
+import { useEnsDomains } from "../hooks/useEnsDomains";
 
 // Set up the Apollo Client
 const client = new ApolloClient({
@@ -39,58 +41,12 @@ const GET_DOMAINS = gql`
   }
 `;
 
-const RESOLVER_CONTRACT: {[chainId: number]: `0x${string}`} = {
-  1: '0x7CE6Cf740075B5AF6b1681d67136B84431B43AbD',
-  11155111: '0x3c187bab6dc2c94790d4da5308672e6f799dcec3',
-}
-
 export default function DomainList() {
   const { address } = useAccount();
   const chainId = useChainId()
 
-  const [domainsLoading, setDomainsLoading] = useState(true);
-  const [domains_, setDomains] = useState<DomainEns[]>([]);
+  const [domains_, domainsLoading, refreshDomains] = useEnsDomains();
   const [aptosDomains, aptosDomainsLoading, _] = useAptosDomains();
-
-  const refreshDomains = useCallback(async () => {
-    try {
-      setDomainsLoading(true);
-
-      if (address) {
-        const response = await client.query({
-          query: GET_DOMAINS,
-          variables: { owner: address.toLowerCase() },
-        });
-
-        setDomains(
-          response.data.nameWrappeds.map((x: any) => ({
-            id: x.id,
-            name: x.name,
-            owner: x.owner.id,
-            expiryDate: new Date(parseInt(x.expiryDate) * 1000),
-            resolver: x.domain.resolver.address,
-            hasCCIPContext:
-              x.domain.resolver.texts?.indexOf("ccip.context") != -1,
-          }))
-        );
-      }
-
-      setDomainsLoading(false);
-    } catch (err) {
-      console.error(err);
-      window.alert(
-        "Domain fetching failed, please check your internet connection and refresh!"
-      );
-    }
-  }, [address, setDomains]);
-
-  useEffect(() => {
-    if (address) {
-      refreshDomains();
-    } else {
-      setDomains([]);
-    }
-  }, [address]);
 
   const CCIP_CONTEXT_CONTRACT = {
     address: RESOLVER_CONTRACT[chainId],

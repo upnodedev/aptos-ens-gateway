@@ -109,6 +109,15 @@ export function useAptosDomains(): [DomainEns[], boolean, () => Promise<void>] {
 
 export function useAptosDomain(domainName: string): [DomainEns | null, boolean, () => Promise<void>] {
   const [aptosDomains, aptosDomainsLoading, refreshAptosDomains] = useAptosDomains();
+  
+  if (domainName.endsWith('.eth')) {
+    return [
+      null,
+      false,
+      async () => {},
+    ]
+  }
+  
   return [
     aptosDomains.find(x => x.name == domainName) ?? null,
     aptosDomainsLoading,

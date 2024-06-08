@@ -8,15 +8,16 @@ import {
 import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { Button, Skeleton } from "antd";
 import { useParams } from "react-router-dom";
-import useEnsDomain from "../hooks/useEnsDomain";
+import { useEnsDomain } from "../hooks/useEnsDomains";
 import DomainENS from "../components/DomainENS";
-import { usePublicClient, useWriteContract } from "wagmi";
+import { useChainId, usePublicClient, useWriteContract } from "wagmi";
 import { useCallback } from "react";
 import { namehash } from "viem";
 import { normalize } from "viem/ens";
 import NameWrapper from '../abi/NameWrapper.json'
 import TOR from '../abi/TOR.json'
 import { useAptosDomain } from "../hooks/useAptosDomains";
+import { NAMEWRAPPER_CONTRACT, RESOLVER_CONTRACT } from "../constants/ens-address";
 
 function DomainManage() {
   const { domainName: domainName_ } = useParams() as { domainName: string };
@@ -27,33 +28,43 @@ function DomainManage() {
   const { setAddr, setAddrExt, setText } = useAptosResolverActions(domainName);
   const { writeContractAsync } = useWriteContract()
   const publicClient = usePublicClient()
+  const chainId = useChainId()
 
   const [ ensDomain, domainLoading, refreshDomain ] = useEnsDomain(domainName)
   const [ aptosDomain, aptosDomainLoading, __ ] = useAptosDomain(domainName)
   const domain = ensDomain || aptosDomain
 
+  console.log('LOADING', state.loading)
+
   const linkToAptos = useCallback(async () => {
-    if (domainName && account?.address) {
-      const hash1 = await writeContractAsync({
-        address: '0x0635513f179D50A207757E05759CbD106d7dFcE8',
-        abi: NameWrapper,
-        functionName: 'setResolver',
-        args: [namehash(domainName), '0x3c187bab6dc2c94790d4da5308672e6f799dcec3'],
-      })
+    if (domainName && account?.address && publicClient) {
+      const promises: Promise<any>[] = []
+
+      if (domain?.resolver.toLowerCase() != RESOLVER_CONTRACT[chainId].toLowerCase()) {
+        const hash1 = await writeContractAsync({
+          address: domain?.isWrapped ? NAMEWRAPPER_CONTRACT[chainId] : '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
+          abi: NameWrapper,
+          functionName: 'setResolver',
+          args: [namehash(domainName), RESOLVER_CONTRACT[chainId]],
+        })
+
+        promises.push(publicClient.waitForTransactionReceipt({ hash: hash1 }))
+      }
 
       const hash2 = await writeContractAsync({
-        address: '0x3c187BAb6dC2C94790d4dA5308672e6F799DcEC3',
+        address: RESOLVER_CONTRACT[chainId],
         abi: TOR,
         functionName: 'setText',
-        args: [namehash(domainName), 'ccip.context', `0xA910501242cfd5f90a9dbEfD1e7923592Ab5E2d1 https://aptos-ens-gw.chom.dev/s/${account.address}`],
+        args: [namehash(domainName), 'ccip.context', `0xA910501242cfd5f90a9dbEfD1e7923592Ab5E2d1 https://aptos-ens-gw.chom.dev/${chainId == 1 ? 'm' : 's'}/${account.address}`],
       })
 
-      await publicClient?.waitForTransactionReceipt({ hash: hash1 })
-      await publicClient?.waitForTransactionReceipt({ hash: hash2 })
+      promises.push(publicClient.waitForTransactionReceipt({ hash: hash2 }))
+
+      await Promise.all(promises)
 
       refreshDomain()
     }
-  }, [ domainName, account?.address ])
+  }, [ domainName, account?.address, publicClient ])
 
   if (!domainLoading && !aptosDomainLoading && !domain) {
     window.alert(`Domain ${domainName} is not found!`)
@@ -71,7 +82,7 @@ function DomainManage() {
           <div>Under Aptos Namespace {formatAddress(account.address)}</div>
         </div> */}
 
-        {state.loading || domainLoading || !domain ? (
+        {state.loading || domainLoading || aptosDomainLoading || !domain ? (
           <Skeleton active className="mt-8" />
         ) : (
           <>

@@ -7,5 +7,6 @@ export interface DomainEns {
   resolver: string
   hasCCIPContext: boolean
   aptosNamespace?: string
+  isWrapped?: boolean
   isApt?: boolean
 }
