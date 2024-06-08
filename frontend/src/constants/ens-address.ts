@@ -1,5 +1,5 @@
 export const RESOLVER_CONTRACT: {[chainId: number]: `0x${string}`} = {
-  1: '0x7CE6Cf740075B5AF6b1681d67136B84431B43AbD',
+  1: '0x7ce6cf740075b5af6b1681d67136b84431b43abd',
   11155111: '0x3c187bab6dc2c94790d4da5308672e6f799dcec3',
 }
 
