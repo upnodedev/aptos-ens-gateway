@@ -30,7 +30,7 @@ ezccip.enableENSIP10(async (name, context) => {
 
 	let parsedName = name;
 
-	if (name.endsWith('apt-gw.eth')) {
+	if (name.endsWith('apt-gw.eth') && name != 'apt-gw.eth') {
 		const parts = name.split('.')
 		parsedName = parts.slice(0, -2).join('.') + '.apt'
 	}
