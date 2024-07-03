@@ -5,9 +5,8 @@ module sender::resolver {
     use std::vector;
     use aptos_framework::event;
     use std::string::String;
-    use aptos_std::table::{Self, Table};
-    #[test_only]
     use std::string;
+    use aptos_std::table::{Self, Table};
     use aptos_framework::object;
 
     // Errors
@@ -22,6 +21,12 @@ module sender::resolver {
         addrext: Table<u256, vector<u8>>,
         text: Table<String, String>,
         contenthash: vector<u8>,
+    }
+
+    #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
+    struct EventBooking has key {
+        node: vector<u8>,
+        event_id: String,
     }
 
     #[event]
@@ -244,6 +249,43 @@ module sender::resolver {
         });
     }
 
+    public entry fun multiset(
+        account: &signer,
+        node: vector<u8>,
+        aptos_addr: address,
+        cointypes: vector<u256>,
+        addrs: vector<vector<u8>>,
+        text_keys: vector<String>,
+        texts: vector<String>,
+        event_id: String
+    ) acquires Resolver {
+        set_addr(account, node, aptos_addr);
+
+        let cointypes_n = vector::length(&cointypes);
+        let texts_n = vector::length(&text_keys);
+
+        for (i in 0..cointypes_n) {
+            set_addr_ext(account, node, *vector::borrow(&cointypes, i), *vector::borrow(&addrs, i))
+        };
+
+        for (i in 0..texts_n) {
+            set_text(account, node, *vector::borrow(&text_keys, i), *vector::borrow(&texts, i))
+        };
+
+        if (!string::is_empty(&event_id)) {
+            // Create object
+            let caller_address = signer::address_of(account);
+            let constructor_ref = object::create_object(caller_address);
+            let object_signer = object::generate_signer(&constructor_ref);
+            
+            // Set up the object by creating booking in it
+            move_to(&object_signer, EventBooking {
+                node: node,
+                event_id: event_id,
+            });
+        }
+    }
+
     #[view]
     public fun get_contenthash(addr: address, node: vector<u8>): vector<u8> acquires Resolver {
         let object_address = object::create_object_address(&addr, get_seed(node));
@@ -306,5 +348,54 @@ module sender::resolver {
 
         set_contenthash(&account, b"node", contenthash);
         assert!(get_contenthash(addr, b"node") == contenthash, 0);
+    }
+
+    #[test(account = @0x1)]
+    public entry fun sender_can_multiset(account: signer) acquires Resolver {
+        let addr = signer::address_of(&account);
+        aptos_framework::account::create_account_for_test(addr);
+
+        let cointype1= 60;
+        let evmaddr1 = x"C360dadbDfC2a30CbDBE1d34a6dB805B17627044";
+        let cointype2 = 61;
+        let evmaddr2 = x"BB60dadbDfC2a30CbDBE1d34a6dB805B176270BB";
+
+        let key1 = string::utf8(b"com.twitter");
+        let value1 = string::utf8(b"chomtana");
+        let key2 = string::utf8(b"com.discord");
+        let value2 = string::utf8(b"chomtana2");
+
+        let cointypes = vector<u256>[];
+        vector::push_back(&mut cointypes, cointype1);
+        vector::push_back(&mut cointypes, cointype2);
+
+        let addrs = vector<vector<u8>>[];
+        vector::push_back(&mut addrs, evmaddr1);
+        vector::push_back(&mut addrs, evmaddr2);
+
+        let text_keys = vector<String>[];
+        vector::push_back(&mut text_keys, key1);
+        vector::push_back(&mut text_keys, key2);
+
+        let texts = vector<String>[];
+        vector::push_back(&mut texts, value1);
+        vector::push_back(&mut texts, value2);
+
+        multiset(
+            &account,
+            b"node",
+            addr,
+            cointypes,
+            addrs,
+            text_keys,
+            texts,
+            string::utf8(b"ivs-demo")
+        );
+
+        assert!(get_addr(addr, b"node") == addr, 0);
+        assert!(get_addr_ext(addr, b"node", cointype1) == evmaddr1, 0);
+        assert!(get_addr_ext(addr, b"node", cointype2) == evmaddr2, 0);
+        assert!(get_text(addr, b"node", key1) == value1, 0);
+        assert!(get_text(addr, b"node", key2) == value2, 0);
     }
 }

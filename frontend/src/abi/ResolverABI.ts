@@ -88,6 +88,24 @@ export default {
       ]
     },
     {
+      "name": "multiset",
+      "visibility": "public",
+      "is_entry": true,
+      "is_view": false,
+      "generic_type_params": [],
+      "params": [
+        "&signer",
+        "vector<u8>",
+        "address",
+        "vector<u256>",
+        "vector<vector<u8>>",
+        "vector<0x1::string::String>",
+        "vector<0x1::string::String>",
+        "0x1::string::String"
+      ],
+      "return": []
+    },
+    {
       "name": "set_addr",
       "visibility": "public",
       "is_entry": true,
@@ -213,6 +231,24 @@ export default {
         {
           "name": "contenthash",
           "type": "vector<u8>"
+        }
+      ]
+    },
+    {
+      "name": "EventBooking",
+      "is_native": false,
+      "abilities": [
+        "key"
+      ],
+      "generic_type_params": [],
+      "fields": [
+        {
+          "name": "node",
+          "type": "vector<u8>"
+        },
+        {
+          "name": "event_id",
+          "type": "0x1::string::String"
         }
       ]
     },

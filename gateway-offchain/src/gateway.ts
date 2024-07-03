@@ -27,8 +27,16 @@ type SurfKeys = keyof typeof SURF
 // which handles resolve() automatically
 ezccip.enableENSIP10(async (name, context) => {
   console.log(name, context.aptos);
+
+	let parsedName = name;
+
+	if (name.endsWith('apt-gw.eth')) {
+		const parts = name.split('.')
+		parsedName = parts.slice(0, -2).join('.') + '.apt'
+	}
+
 	const chain = context.chain as SurfKeys
-	const dnsNode = hexEncodeName(name);
+	const dnsNode = hexEncodeName(parsedName);
 
   return {
     async text(key) {
