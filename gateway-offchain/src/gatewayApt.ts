@@ -3,27 +3,11 @@ import { Aptos, AptosConfig, Network } from "@aptos-labs/ts-sdk";
 import { createSurfClient } from "@thalalabs/surf";
 import packet from 'dns-packet'
 import RESOLVER_ABI from "./abi/ResolverABI.js";
-import { createHttpLink, ApolloClient, InMemoryCache, gql } from "@apollo/client";
+import { GraphQLClient, gql } from 'graphql-request';
 
-// Define the GraphQL endpoint
-const httpLinkMainnet = createHttpLink({
-  uri: 'https://api.mainnet.aptoslabs.com/v1/graphql',
-});
-
-const httpLinkTestnet = createHttpLink({
-  uri: 'https://api.testnet.aptoslabs.com/v1/graphql',
-});
-
-// Initialize the Apollo Client
-const clientMainnet = new ApolloClient({
-  link: httpLinkMainnet,
-  cache: new InMemoryCache(),
-});
-
-const clientTestnet = new ApolloClient({
-  link: httpLinkTestnet,
-  cache: new InMemoryCache(),
-});
+// Initialize the GraphQL Client
+const clientMainnet = new GraphQLClient('https://api.mainnet.aptoslabs.com/v1/graphql');
+const clientTestnet = new GraphQLClient('https://api.testnet.aptoslabs.com/v1/graphql');
 
 const GET_DOMAIN = gql`
   query get_domain($domain: String, $subdomain: String) {
@@ -71,6 +55,20 @@ const APOLLO_CLIENT = {
 
 type SurfKeys = keyof typeof SURF
 
+type ANSRecord = {
+  domain: string;
+  expiration_timestamp: string;
+  registered_address: string;
+  subdomain: string;
+  token_standard: string;
+  is_primary: boolean;
+  owner_address: string;
+};
+
+type GetDomainResponse = {
+  current_aptos_names: ANSRecord[];
+};
+
 async function getDomainOwner(chain: 'm' | 's', name: string): Promise<[string, string]> {
 	const parts = name.split('.')
 	const subdomain = parts.length < 3 ? "" : parts[0];
@@ -82,18 +80,15 @@ async function getDomainOwner(chain: 'm' | 's', name: string): Promise<[string, 
 	};
 
 	// Fetch the data
-	const response = await APOLLO_CLIENT[chain].query({
-		query: GET_DOMAIN,
-		variables: variables,
-	})
+	const response = await APOLLO_CLIENT[chain].request<GetDomainResponse>(GET_DOMAIN, variables)
 
-	if (!response.data?.current_aptos_names[0]) {
+	if (!response.current_aptos_names[0]) {
 		throw new Error("Domain not found")
 	}
 
 	return [
-		response.data.current_aptos_names[0].owner_address,
-		response.data.current_aptos_names[0].registered_address,
+		response.current_aptos_names[0].owner_address,
+		response.current_aptos_names[0].registered_address,
 	]
 }
 
