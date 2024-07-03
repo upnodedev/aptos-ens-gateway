@@ -124,7 +124,7 @@ ezccip.enableENSIP10(async (name, context) => {
 					typeArguments: [],
 				}))[0]
 			} catch (err) {
-				return domainRegisteredAddress || ''
+				return ''
 			}
     },
     async addr(type) {
@@ -151,6 +151,10 @@ ezccip.enableENSIP10(async (name, context) => {
 					return `${raw}`
 				}
 			} catch (err) {
+				if (Number(type) == 637) {
+					return domainRegisteredAddress || '0x'
+				}
+				
 				return '0x'
 			}
     },
