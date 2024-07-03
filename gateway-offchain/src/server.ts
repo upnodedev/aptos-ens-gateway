@@ -2,6 +2,7 @@ import express, { NextFunction, Request, Response } from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import { ezccip } from "./gateway.js";
+import { ezccip as ezccipApt } from "./gatewayApt.js";
 import dotenv from "dotenv";
 import { ethers } from "ethers";
 
@@ -34,6 +35,31 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     }
   }
   next();
+});
+
+// Endpoint to handle CCIP-Read requests
+app.post("/:chain/apt", async (req, res) => {
+  try {
+    const { chain } = req.params;
+    const { sender, data: calldata } = req.body;
+
+    // Handle the CCIP-Read request
+    const { data, history } = await ezccipApt.handleRead(sender, calldata, {
+      protocol: "tor",
+      signingKey: new ethers.SigningKey(process.env.SIGNING_KEY as string), // Your private key from environment variable
+      resolver: RESOLVERS[chain], // Address of the TOR from environment variable
+      chain,
+    });
+
+    // Send the ABI-encoded response in JSON format
+    res.json({ data });
+
+    // Log the history of the response
+    console.log(history.toString());
+  } catch (error) {
+    console.error("Error handling CCIP-Read request:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 // Endpoint to handle CCIP-Read requests
