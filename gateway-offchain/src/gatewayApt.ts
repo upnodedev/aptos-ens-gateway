@@ -103,7 +103,7 @@ ezccip.enableENSIP10(async (name, context) => {
 		const parts = name.split('.')
 		parsedName = parts.slice(0, -2).join('.') + '.apt'
 	} else {
-		throw new Error("Not supported")
+		return {}
 	}
 
 	const chain = context.chain as SurfKeys
