@@ -64,7 +64,7 @@ export default function DomainList() {
 
       {loading ? (
         <Skeleton active className="mt-8"></Skeleton>
-      ) : domains.length == 0 ? (
+      ) : (domains.length + aptosDomains.length) == 0 ? (
         <div className="flex flex-col items-center mt-8">
           <div className="mb-3">You don't have any domains!</div>
           <a href="https://ens.domains">
