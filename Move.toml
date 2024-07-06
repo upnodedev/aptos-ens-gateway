@@ -4,13 +4,12 @@ version = "1.0.0"
 authors = []
 
 [addresses]
-sender = "0xe5bf58bbf89ee015ab9941b8b376d0ce6bcf8824423febfbbbb4693cdf8f975a"
+std =  "0x1"
+sender = "0xAA6B468E23915071B7A87AD9FC1990F94FDD2780"
 
 [dev-addresses]
 
-[dependencies.AptosFramework]
-git = "https://github.com/aptos-labs/aptos-core.git"
-rev = "mainnet"
-subdir = "aptos-move/framework/aptos-framework"
+[dependencies]
+InitiaStdlib = { git = "https://github.com/initia-labs/move-natives", subdir = "initia_stdlib", rev = "main" }
 
 [dev-dependencies]
